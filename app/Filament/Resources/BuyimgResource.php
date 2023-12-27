@@ -25,6 +25,10 @@ use Illuminate\Support\Facades\Storage;
 
 class BuyimgResource extends Resource
 {
+    public static function shouldRegisterNavigation(): bool
+    {
+        return  auth()->user()->can('ارشفة مشتريات');
+    }
   protected static ?string $pluralModelLabel='مستندات مشتريات';
     protected static ?string $model = Buyimg::class;
 
@@ -76,6 +80,25 @@ class BuyimgResource extends Resource
                 ->label('تاريخ الأرشفة'),
                 ImageColumn::make('image')
                 ->label('المستند')
+                    ->action(
+                        Tables\Actions\Action::make('عرض')
+                            ->fillForm(fn (Buyimg $record): array => [
+                                'image' => $record->image,
+                            ])
+                            ->form([
+                                FileUpload::make('image')
+                                    ->hiddenLabel()
+                                    ->image()
+                                    ->imageResizeMode('cover')
+                                    ->imageCropAspectRatio('16:9')
+                                    ->imageResizeTargetWidth('1920')
+                                    ->imageResizeTargetHeight('1080')
+                                    ->disabled()
+                                    ->openable()
+                                    ->downloadable()
+                           ])
+                    )
+
 
             ])
             ->filters([

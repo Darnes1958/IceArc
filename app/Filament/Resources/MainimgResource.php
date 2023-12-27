@@ -22,6 +22,11 @@ use Illuminate\Support\Facades\Storage;
 
 class MainimgResource extends Resource
 {
+    public static function shouldRegisterNavigation(): bool
+    {
+        return  auth()->user()->can('ارشفة عقود');
+    }
+
     public static $year='2023';
 
   protected static ?string $pluralModelLabel='مستندات عقود';
@@ -77,6 +82,26 @@ class MainimgResource extends Resource
                 ->sortable(),
               ImageColumn::make('image')
                 ->label('المستند')
+                  ->action(
+                      Tables\Actions\Action::make('عرض')
+                          ->fillForm(fn (Mainimg $record): array => [
+                              'image' => $record->image,
+                          ])
+                          ->form([
+                              FileUpload::make('image')
+                                  ->hiddenLabel()
+                                  ->image()
+                                  ->imageResizeMode('cover')
+                                  ->imageCropAspectRatio('16:9')
+                                  ->imageResizeTargetWidth('1920')
+                                  ->imageResizeTargetHeight('1080')
+                                  ->imageResizeUpscale()
+                                  ->allowImageResize()
+                                  ->disabled()
+                                  ->openable()
+                                  ->downloadable()
+                          ])
+                  )
             ])
             ->filters([
                 //
