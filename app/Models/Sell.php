@@ -24,6 +24,13 @@ class Sell extends Model
   public function Jehasell(){
     return $this->belongsTo(Jeha::class,'jeha','jeha_no');
   }
+    public function Halls_name(){
+        return $this->belongsTo(Halls_name::class,'place_no','hall_no');
+    }
+    public function stores_name(){
+        return $this->belongsTo(Stores_name::class,'place_no','st_no');
+    }
+
   public function __construct(array $attributes = [])
   {
     parent::__construct($attributes);

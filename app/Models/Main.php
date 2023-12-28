@@ -21,6 +21,9 @@ class Main extends Model
     return $this->belongsTo(Sell::class,'order_no','order_no');
 
   }
+    public function Bank(){
+        return $this->belongsTo(Bank::class,'bank','bank_no');
+    }
   public function __construct(array $attributes = [])
   {
     parent::__construct($attributes);

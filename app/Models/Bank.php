@@ -18,6 +18,9 @@ class Bank extends Model
   public function Mainimg(){
     return $this->hasMany(Mainimg::class,'bank_bank_no','bank_no');
   }
+  public function Main(){
+      return $this->hasMany(Main::class,'bank','bank_no');
+  }
 
   public function __construct(array $attributes = [])
   {
