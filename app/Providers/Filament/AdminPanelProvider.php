@@ -27,6 +27,8 @@ class AdminPanelProvider extends PanelProvider
             ->profile(EditProfile::class)
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->sidebarCollapsibleOnDesktop()
+            ->maxContentWidth('Full')
+            ->breadcrumbs(false)
             ->default()
             ->id('admin')
             ->path('admin')

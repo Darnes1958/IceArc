@@ -21,8 +21,12 @@ class Jeha extends Model
   public function Buyimg(){
     return $this->hasMany(Buyimg::class,'jeha_jeha_no','jeha_no');
   }
+
   public function Buy(){
     return $this->hasMany(Buy::class,'jeha','jeha_no');
+  }
+  public function Sell(){
+    return $this->hasMany(Sell::class,'jeha','jeha_no');
   }
 
   public function __construct(array $attributes = [])

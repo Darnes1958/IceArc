@@ -32,7 +32,7 @@ class BuyimgResource extends Resource
   protected static ?string $pluralModelLabel='مستندات مشتريات';
     protected static ?string $model = Buyimg::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-pound';
 
     public static function form(Form $form): Form
     {
@@ -98,8 +98,6 @@ class BuyimgResource extends Resource
                                     ->downloadable()
                            ])
                     )
-
-
             ])
             ->filters([
               SelectFilter::make('jeha_jeha_no')

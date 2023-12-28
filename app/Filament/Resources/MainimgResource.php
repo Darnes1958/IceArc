@@ -33,7 +33,7 @@ class MainimgResource extends Resource
 
     protected static ?string $model = Mainimg::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
 
 
@@ -96,7 +96,7 @@ class MainimgResource extends Resource
                                   ->imageResizeTargetWidth('1920')
                                   ->imageResizeTargetHeight('1080')
                                   ->imageResizeUpscale()
-                                  ->allowImageResize()
+
                                   ->disabled()
                                   ->openable()
                                   ->downloadable()
