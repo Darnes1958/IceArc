@@ -2,6 +2,13 @@
 
 return [
 
+  'widgets' => [
+    // ...
+    'default' => [
+      'account' => false, // Disables the account widget.
+      'info' => false, // Disables the info widget.
+    ],
+  ],
     /*
     |--------------------------------------------------------------------------
     | Default Filesystem Disk

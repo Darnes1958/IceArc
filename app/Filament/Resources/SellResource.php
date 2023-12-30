@@ -1,7 +1,12 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use Filament\Forms\Get;
+use Filament\Forms\Components\Select;
+use Illuminate\Support\Collection;
+use App\Models\MasCenter;
+use Filament\Support\Enums\MaxWidth;
+use Filament\Tables\Enums\FiltersLayout;
 use App\Filament\Resources\SellResource\Pages;
 use App\Filament\Resources\SellResource\RelationManagers;
 use App\Models\Halls_name;
@@ -21,9 +26,14 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\Radio;
+use Livewire\Attributes\Reactive;
 
 class SellResource extends Resource
 {
+
+  public static $place_type=2;
   public static function shouldRegisterNavigation(): bool
   {
     return  auth()->user()->can('فواتير مبيعات') ||
@@ -34,6 +44,11 @@ class SellResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+  protected ?string $heading = '';
+  public function getBreadcrumbs(): array
+  {
+    return [""];
+  }
   public static function getEloquentQuery(): Builder
   {
     return parent::getEloquentQuery()->where('price_type','2')->orderBy('order_date','desc');
@@ -55,10 +70,10 @@ class SellResource extends Resource
               ->searchable()
               ->sortable()
               ->label('رقم الفاتورة'),
-                TextColumn::make('order_date')
-                    ->searchable()
-                    ->sortable()
-                    ->label('تاريخ الفاتورة'),
+               TextColumn::make('order_date')
+                 ->searchable()
+                 ->sortable()
+                 ->label('تاريخ الفاتورة'),
               TextColumn::make('Jehasell.jeha_name')
                 ->searchable()
                 ->sortable()
@@ -66,24 +81,20 @@ class SellResource extends Resource
               TextColumn::make('tot')
                 ->label('اجمالي الفاتورة'),
               TextColumn::make('Stores_name.st_name')
-                    ->label('نقطة البيع')
-                    ->visible(function (Forms\Get $get){
-                        $get('sell_type')==1;
-                    }),
+                ->visible(function (){return self::$place_type==1;})
+                ->label('نقطة البيع'),
               TextColumn::make('Halls_name.hall_name')
-                    ->label('نقطة البيع')
-                  ->visible(function (Forms\Get $get){
-                      $get('sell_type')==2;
-                  }),
-
+                ->visible(function (){return self::$place_type==2;})
+                ->label('نقطة البيع'),
               TextColumn::make('Main.no')
                 ->label('رقم العقد'),
               Tables\Columns\IconColumn::make('Main.no')
                 ->label('لها عقد')
-                ->icon(fn (string $state): string => match ($state) {
-                  null => 'heroicon-o-pencil',
-                  default => 'heroicon-o-check',
+                ->icon(function (string $state) {
+                 if (is_string($state) ) return 'heroicon-o-check' ;
+                 else return 'heroicon-o-x-mark';
                 })
+
                 ->color(fn (string $state): string => match ($state) {
                   null => 'danger',
                   default => 'success',
@@ -103,10 +114,7 @@ class SellResource extends Resource
                                 $join->on('place_no', '=', 'hall_no');
                             })->selectraw('hall_name as place_name');
                         })
-
                           ->first()->place_name,
-
-
 
                       'no' => Main::where('order_no',$record->order_no,)->first()->no,
                       'kst_count' => Main::where('order_no',$record->order_no,)->first()->kst_count,
@@ -163,25 +171,50 @@ class SellResource extends Resource
 
             ])
             ->filters([
-                SelectFilter::make('sell_type')
-                    ->options([
-                        '1' => 'مخازن',
-                        '2' => 'صالات',
-                    ])
-                    ->label('مخازن/صالات'),
-
-                SelectFilter::make('place_no')
-                    ->options(Stores_name::pluck('st_name', 'st_no'))
-
-                    ->label('مخزن'),
-
-
                 Tables\Filters\Filter::make('order_date')
                     ->form([
-                        Forms\Components\DatePicker::make('من_تاريخ_الفاتورة'),
-                        Forms\Components\DatePicker::make('الي_تاريخ_الفاتورة'),
+                      Forms\Components\Grid::make()
+                      ->schema([
+                        Radio::make('مخزن_او_صاله')
+                          ->inline()
+                          ->live()
+                          ->reactive()
+                          ->options([
+                            1 => 'مخازن',
+                            2 => 'صالات',
+
+                          ])
+                          ->afterStateUpdated(function (?string $state) {
+                            if ($state==1) {  self::$place_type=1 ;}
+                            else { self::$place_type=2 ;}
+                          }),
+                        Forms\Components\DatePicker::make('من_تاريخ_الفاتورة')
+                          ->inlineLabel()
+
+                          ->afterStateUpdated(function (Forms\Get $get) {
+                            self::$place_type=$get('مخزن_او_صاله');
+                          }
+                          ),
+                        Forms\Components\DatePicker::make('الي_تاريخ_الفاتورة')->inlineLabel()
+                          ->afterStateUpdated(function (Forms\Get $get) {
+                            self::$place_type=$get('مخزن_او_صاله');
+                          }),
+                       Select::make('place_no')
+                        ->label('نقطة البيع')
+                          ->options(fn (Get $get): Collection => MasCenter::query()
+                            ->where('place_type', $get('مخزن_او_صاله'))
+                            ->pluck('CenterName', 'WhoID'))
+                          ->preload()
+                         ->inlineLabel()
+                          ->afterStateUpdated(function (Forms\Get $get) {
+                           self::$place_type=$get('مخزن_او_صاله');
+                            }
+                            ),
+
+                      ])->columns(4)
                     ])
                     ->query(function (Builder $query, array $data): Builder {
+
                         return $query
                             ->when(
                                 $data['من_تاريخ_الفاتورة'],
@@ -190,12 +223,18 @@ class SellResource extends Resource
                             ->when(
                                 $data['الي_تاريخ_الفاتورة'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('order_date', '<=', $date),
-                            );
+                            )
+                          ->when( $data['مخزن_او_صاله'],
+                            fn (Builder $query, $int): Builder => $query->where('sell_type', '=', $int),
+                          )
+                          ->when( $data['place_no'],
+                            fn (Builder $query, $int): Builder => $query->where('place_no', '=', $int),
+                          );
+
                     }),
 
-            ])
-
-            ;
+            ], layout: FiltersLayout::AboveContent)
+            ->filtersFormColumns(1) ;
     }
 
     public static function getRelations(): array
