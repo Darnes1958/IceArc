@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class StatsOverView extends BaseWidget
 {
   protected int | string | array $columnSpan = 'full';
-  protected function getColumns(): int 
+  protected function getColumns(): int
   {
     return 2;
   }
