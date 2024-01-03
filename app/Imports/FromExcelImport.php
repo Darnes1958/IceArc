@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\FromExcel;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -29,7 +30,7 @@ class FromExcelImport implements ToModel, WithHeadingRow
           'ksm' => $row['ksm'],
           'ksm_date' => Date::excelToDateTimeObject($row['ksm_date']),
           'bank' => 0,
-          'hafitha_tajmeehy' => 0,
+          'hafitha_tajmeehy' => Auth::user()->IsAdmin,
           'h_no' => 1,
 
         ]
@@ -39,7 +40,8 @@ class FromExcelImport implements ToModel, WithHeadingRow
     }//
     public function headingRow(): int
         {
-          return 10;
+          return Auth::user()->empno;
+
         }
 
 }
