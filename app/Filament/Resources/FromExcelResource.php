@@ -31,7 +31,12 @@ class FromExcelResource extends Resource
     {
         return $table
             ->columns([
-                //
+              Tables\Columns\TextColumn::make('no')->searchable()->sortable(),
+              Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
+              Tables\Columns\TextColumn::make('acc')->searchable()->sortable(),
+              Tables\Columns\TextColumn::make('ksm_date'),
+              Tables\Columns\TextColumn::make('ksm'),
+              Tables\Columns\TextColumn::make('hafitha_tajmeehy'),
             ])
             ->filters([
                 //

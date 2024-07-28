@@ -18,15 +18,24 @@ class FromExcelImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
 
-      if (!isset($row['ksm']) || !isset($row['name']) || !isset($row['acc'])
+      if (!isset($row['ksm'])  || !isset($row['acc'])
         || !isset($row['ksm_date'])) {
         return null;
       }
+       if (Auth::user()->IsAdmin==50) {
+         $name = 'غير محدد';
+         if (strlen($row['acc'])==11) $acc='0'.$row['acc']; else $acc=$row['acc'];
+       }
+       else {
+         $name=$row['name'];
+         $acc=$row['acc'];
+       }
+
 
       $rec= FromExcel::on(auth()->user()->company)->create(
         [
-          'name' => $row['name'],
-          'acc' => $row['acc'],
+          'name' => $name,
+          'acc' => $acc,
           'ksm' => $row['ksm'],
           'ksm_date' => Date::excelToDateTimeObject($row['ksm_date']),
           'bank' => 0,
