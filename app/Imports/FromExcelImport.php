@@ -24,7 +24,7 @@ class FromExcelImport implements ToModel, WithHeadingRow
       }
        if (Auth::user()->IsAdmin==50) {
          $name = 'غير محدد';
-         if (strlen($row['acc'])==11) $acc='0'.$row['acc']; else $acc=$row['acc'];
+         if (strlen($row['acc'])<12) $acc='00'.$row['acc']; else $acc='0'.$row['acc'];
        }
        else {
          $name=$row['name'];
