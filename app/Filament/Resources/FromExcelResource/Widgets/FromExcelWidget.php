@@ -25,11 +25,8 @@ class FromExcelWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('taj_id'),
             ])
          ->action([
-           Action::make('del')
-            ->action(function (Dateofexcel $record){
-             $record->delete();
-            })
-           ->requiresConfirmation()
+           Tables\Actions\DeleteAction::make('del')
+
           ]);
     }
 }
