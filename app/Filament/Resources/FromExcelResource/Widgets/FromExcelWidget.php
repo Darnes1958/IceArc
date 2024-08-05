@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\FromExcelResource\Widgets;
 
 use App\Models\Dateofexcel;
+use Filament\Actions\Action;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -24,7 +25,7 @@ class FromExcelWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('taj_id'),
             ])
          ->action([
-           Tables\Actions\Action::make('del')
+           Action::make('del')
             ->action(function (Dateofexcel $record){
              $record->delete();
             })
