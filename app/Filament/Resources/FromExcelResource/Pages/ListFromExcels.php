@@ -11,6 +11,7 @@ use App\Models\User;
 use Filament\Actions;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,7 +56,9 @@ class ListFromExcels extends ListRecords
                 ->whereBetween('date_begin',[$beginDate,$endDate])->first();
               if ($res){
                 FromExcel::truncate();
-                $this->dispatchBrowserEvent('mmsg', 'يوجد تداخل في تاريخ الحافظة مع حافظة سابقة لنفس المصرف ');
+                Notification::make()
+                   ->title('يوجد تداخل في تاريخ الحافظة مع حافظة سابقة لنفس المصرف ')
+                   ->send();
                 return false;
 
               }

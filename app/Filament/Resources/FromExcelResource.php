@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FromExcelResource\Pages;
 use App\Filament\Resources\FromExcelResource\RelationManagers;
+use App\Filament\Resources\FromExcelResource\Widgets\FromExcelWidget;
 use App\Models\FromExcel;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -71,4 +72,17 @@ class FromExcelResource extends Resource
             'edit' => Pages\EditFromExcel::route('/{record}/edit'),
         ];
     }
+    public static function getWidgets(): array
+    {
+      return [
+        FromExcelWidget::class,
+      ];
+    }
+  protected function getFooterWidgets(): array
+  {
+    return [
+      FromExcelWidget::class,
+    ];
+
+  }
 }
