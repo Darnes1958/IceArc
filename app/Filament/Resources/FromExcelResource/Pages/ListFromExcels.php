@@ -5,6 +5,7 @@ namespace App\Filament\Resources\FromExcelResource\Pages;
 use App\Filament\Resources\FromExcelResource;
 use App\Imports\FromExcelImport;
 use App\Models\BankTajmeehy;
+use App\Models\Dateofexcel;
 use App\Models\FromExcel;
 use App\Models\User;
 use Filament\Actions;
@@ -36,7 +37,6 @@ class ListFromExcels extends ListRecords
                         ->label('رقم سطر العنوان')
                         ->required(),
                 ])
-
                 ->action(function (array $data){
                     FromExcel::truncate();
                     User::find(Auth::id())->update(['empno'=>$data['headerrow'],'IsAdmin'=>$data['taj']]);
@@ -47,6 +47,27 @@ class ListFromExcels extends ListRecords
                 ->slideOver()
                 ->color('danger')
                 ->use(FromExcelImport::class),
+          Actions\Action::make('check')
+            ->action(function (array $data){
+              $beginDate=FromExcel::min('ksm_date');
+              $endDate=FromExcel::max('ksm_date');
+              $res=Dateofexcel::where('taj_id',$data['taj'])
+                ->whereBetween('date_begin',[$beginDate,$endDate])->first();
+              if ($res){
+                FromExcel::truncate();
+                $this->dispatchBrowserEvent('mmsg', 'يوجد تداخل في تاريخ الحافظة مع حافظة سابقة لنفس المصرف ');
+                return false;
+
+              }
+
+              Dateofexcel::create([
+                  'taj_id'=>$this->TajNo,
+                  'date_begin'=>FromExcel::min('ksm_date'),
+                  'date_end'=>FromExcel::max('ksm_date'),
+                ]
+              );
+            })
+
 
         ];
     }
