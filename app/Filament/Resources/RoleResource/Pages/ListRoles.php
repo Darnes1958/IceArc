@@ -4,6 +4,8 @@ namespace App\Filament\Resources\RoleResource\Pages;
 
 use App\Filament\Resources\RoleResource;
 use App\Models\BankTajmeehy;
+use App\Models\Dateofexcel;
+use App\Models\excel\FromExcelModel;
 use App\Models\FromExcel;
 use App\Models\User;
 use Filament\Actions;
@@ -47,6 +49,26 @@ class ListRoles extends ListRecords
             ->slideOver()
             ->color('danger')
             ->use(FromExcelImport::class),
+          Actions\Action::make('check')
+           ->action(function (){
+             $beginDate=FromExcel::min('ksm_date');
+             $endDate=FromExcel::max('ksm_date');
+             $res=Dateofexcel::where('taj_id',$this->TajNo)
+               ->whereBetween('date_begin',[$beginDate,$endDate])->first();
+             if ($res){
+               FromExcel::truncate();
+               $this->dispatchBrowserEvent('mmsg', 'يوجد تداخل في تاريخ الحافظة مع حافظة سابقة لنفس المصرف ');
+               return false;
+
+             }
+
+             Dateofexcel::create([
+                 'taj_id'=>$this->TajNo,
+                 'date_begin'=>FromExcel::min('ksm_date'),
+                 'date_end'=>FromExcel::max('ksm_date'),
+               ]
+             );
+           })
 
         ];
     }
