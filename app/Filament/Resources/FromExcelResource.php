@@ -78,11 +78,5 @@ class FromExcelResource extends Resource
         FromExcelWidget::class,
       ];
     }
-  protected function getFooterWidgets(): array
-  {
-    return [
-      FromExcelWidget::class,
-    ];
 
-  }
 }

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\FromExcelResource\Pages;
 
 use App\Filament\Resources\FromExcelResource;
+use App\Filament\Resources\FromExcelResource\Widgets\FromExcelWidget;
 use App\Imports\FromExcelImport;
 use App\Models\BankTajmeehy;
 use App\Models\Dateofexcel;
@@ -74,4 +75,11 @@ class ListFromExcels extends ListRecords
 
         ];
     }
+  protected function getFooterWidgets(): array
+  {
+    return [
+      FromExcelWidget::class,
+    ];
+
+  }
 }
