@@ -43,10 +43,10 @@ class UserResource extends Resource
             ->schema([
                 TextInput::make('name')->unique(ignoreRecord: true)->required(),
                 TextInput::make('email')->email()->unique(ignoreRecord: true)->required(),
-                Select::make('company')
-                    ->options(Customer::all()->pluck('CompanyName', 'Company'))
-                    ->preload()
-                    ->required(),
+                Forms\Components\Hidden::make('company')
+                 ->default(Auth::user()->company),
+                Forms\Components\Hidden::make('username')
+                 ->default('any'),
                 TextInput::make('password')->required()->visibleOn('create'),
                 Select::make('roles')
                     ->searchable()
