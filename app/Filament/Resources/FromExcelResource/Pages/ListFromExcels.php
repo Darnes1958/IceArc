@@ -35,7 +35,6 @@ class ListFromExcels extends ListRecords
                         ->options(BankTajmeehy::all()->pluck('TajName','TajNo'))
                         ->searchable()
                         ->preload()
-                        ->default(1)
                         ->required(),
                     TextInput::make('headerrow')
                         ->default(10)
