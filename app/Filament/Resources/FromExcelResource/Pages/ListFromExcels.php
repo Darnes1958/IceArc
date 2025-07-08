@@ -23,9 +23,12 @@ class ListFromExcels extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+
             Actions\Action::make('Do')
                 ->color('success')
+                ->fillForm(fn (User $record): array => [
+                    'taj' => $record->isAdmin,'headerrow'=>$record->empno,
+                ])
                 ->form([
                     Select::make('taj')
                         ->label('المصرف التجميعي')
@@ -47,6 +50,9 @@ class ListFromExcels extends ListRecords
 
             \EightyNine\ExcelImport\ExcelImportAction::make()
                 ->slideOver()
+                ->before(function (){
+                    FromExcel::truncate();
+                })
                 ->color('danger')
                 ->use(FromExcelImport::class),
           Actions\Action::make('check')
