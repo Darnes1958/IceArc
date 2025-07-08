@@ -26,8 +26,8 @@ class ListFromExcels extends ListRecords
 
             Actions\Action::make('Do')
                 ->color('success')
-                ->fillForm(fn (User $record): array => [
-                    'taj' => $record->isAdmin,'headerrow'=>$record->empno,
+                ->fillForm(fn (): array => [
+                    'taj' => Auth::user()->isAdmin,'headerrow'=>Auth::user()->empno,
                 ])
                 ->form([
                     Select::make('taj')
