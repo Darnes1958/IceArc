@@ -19,6 +19,7 @@ class FromExcelWidget extends BaseWidget
               return $dateofexcel;
               }
             )
+            ->defaultSort('date_begin','desc')
             ->columns([
                 Tables\Columns\TextColumn::make('date_begin'),
                 Tables\Columns\TextColumn::make('date_end'),
